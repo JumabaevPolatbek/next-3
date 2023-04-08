@@ -1,26 +1,29 @@
+import { createSlice } from '@reduxjs/toolkit';
 import {
-	createSlice,
+	Action,
 	PayloadAction,
+	configureStore,
+	ThunkAction,
 } from '@reduxjs/toolkit';
-import { combineReducers } from 'redux';
-import { HYDRATE } from 'next-redux-wrapper';
+import { RootState } from './store';
+
 export type Todo = {
 	id: number;
 	title: string;
 	description: string;
 };
-export type InitState = {
+
+export interface StateStore {
 	id: number;
 	todos: Todo[];
-};
-const initialState: InitState = {
+}
+const initialState: StateStore = {
 	id: 0,
 	todos: [],
 };
-
-export const todo = createSlice({
-	name: 'todos',
-	initialState,
+export const reducer = createSlice({
+	name: 'Todo-List',
+	initialState: initialState,
 	reducers: {
 		addTodo: (
 			state,
@@ -41,29 +44,21 @@ export const todo = createSlice({
 			action: PayloadAction<number>
 		) => {
 			state.todos.filter(
-				({ id }) => id !== action.payload
+				(todo) => todo.id !== action.payload
 			);
 		},
-		editTodo: (
-			state,
-			action: PayloadAction<{
-				id: number;
-				title: string;
-				description: string;
-			}>
-		) => {
-			state.todos[action.payload.id].title =
-				action.payload.title;
-			state.todos[action.payload.id].description =
+		editTodo: (state, action: PayloadAction<Todo>) => {
+			const index = state.todos.findIndex(
+				(todo) => todo.id === action.payload.id
+			);
+			state.todos[index].title = action.payload.title;
+			state.todos[index].description =
 				action.payload.description;
 		},
 	},
-	
 });
-
 export const { addTodo, removeTodo, editTodo } =
-	todo.actions;
-// export type StateTodo=ReturnType<typeof todo>
-export const rootReducer = combineReducers({
-	[todo.name]: todo.reducer,
-});
+	reducer.actions;
+
+// export const selectTodo = (state: RootState) =>
+// 	state['Todo-List'].todos;

@@ -1,39 +1,56 @@
 import {
+	Action,
+	PayloadAction,
 	configureStore,
 	ThunkAction,
+	AnyAction,
+	ThunkMiddleware,
 } from '@reduxjs/toolkit';
-import {
-	Context,
-	createWrapper,
-	MakeStore,
-} from 'next-redux-wrapper';
-import {
-	TypedUseSelectorHook,
-	useDispatch,
-	useSelector,
-} from 'react-redux';
-import { Action } from 'redux';
-import { InitState, rootReducer, todo } from './reducer';
+import { ToolkitStore } from '@reduxjs/toolkit/dist/configureStore';
+import { useDispatch } from 'react-redux';
+import { reducer, StateStore } from './reducer';
 
-const makeStore: MakeStore<any> = () => {
-	configureStore({
-		reducer: rootReducer,
-		devTools: true,
+// const store = configureStore({
+// 	reducer: {
+// 		[reducer.name]: reducer.reducer,
+// 	},
+// });
+export let store: ToolkitStore<
+	{ 'Todo-List': StateStore },
+	AnyAction,
+	[
+		ThunkMiddleware<
+			{ 'Todo-List': StateStore },
+			AnyAction,
+			undefined
+		>
+	]
+>;
+export default function getStore(initialState?: RootState) {
+	// const initialStore = configureStore({
+	// 	reducer: {
+	// 		[reducer.name]: reducer.reducer,
+	// 	},
+	// 	preloadedState: initialState,
+	// });
+	// return initialStore;
+	store = configureStore({
+		reducer: {
+			[reducer.name]: reducer.reducer,
+		},
+		preloadedState: initialState,
 	});
-};
-export type AppState = ReturnType<typeof makeStore>;
-
-// export type AppDispatch = typeof makeStore.dispatch;
-
+	return store;
+}
+export type AppDispatch = typeof store.dispatch;
+export type RootState = ReturnType<typeof store.getState>;
 export type AppThunk<ReturnType = void> = ThunkAction<
 	ReturnType,
-	AppState,
+	RootState,
 	unknown,
-	Action
+	Action<string>
 >;
-export const useAppSelector: TypedUseSelectorHook<AppState> =
-	useSelector;
-// export const useAppDispatch = () =>
-// 	useDispatch<AppDispatch>();
-// export default store;
-export const wrapper = createWrapper<AppState>(makeStore,{debug:true});
+export const useAppDispatch: () => AppDispatch =
+	useDispatch;
+export const useAppSelector = (state: RootState) =>
+	state['Todo-List'];

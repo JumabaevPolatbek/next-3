@@ -26,7 +26,20 @@ const Todo: React.FC<Todo> = ({
 
 		setChecked(newChecked);
 	};
-	return <li>{description}</li>;
+	return (
+		<ListItem
+			key={id}
+			disableGutters
+			secondaryAction={
+				<IconButton aria-label='comment'>
+					{/* <CommentIcon /> */}
+				</IconButton>
+			}
+		>
+			<ListItemText primary={title} />
+			<ListItemText primary={description} />
+		</ListItem>
+	);
 };
 
 export default Todo;
