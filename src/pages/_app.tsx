@@ -1,18 +1,19 @@
 import '../styles/globals.css';
 import type { AppProps } from 'next/app';
-import Layout from '../components/Layout/Layout';
-import { Provider } from 'react-redux';
-import getStore from '../store/store';
+import Providers from '../redux/provider';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import Layout from '../components/Layout';
 export default function App({
 	Component,
-	pageProps
+	pageProps,
 }: AppProps) {
-	const store = getStore();
 	return (
-		<Provider store={store}>
+		<Providers>
+			<ToastContainer />
 			<Layout>
 				<Component {...pageProps} />
 			</Layout>
-		</Provider>
+		</Providers>
 	);
 }

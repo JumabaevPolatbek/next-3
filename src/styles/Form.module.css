@@ -1,7 +1,6 @@
 .form{
     display: flex;
     flex-wrap: wrap;
-    justify-content: space-between;
     align-items: flex-start;
 }
 .flex{
@@ -11,4 +10,10 @@
 }
 .flex>div{
     padding: 5px 0px;
+}
+.container{
+    padding:  15px;
+    margin: 0 auto;
+    width: 100%;
+    max-width: 1140px;
 }

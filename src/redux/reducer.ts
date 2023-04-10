@@ -1,36 +1,20 @@
-import { createSlice } from '@reduxjs/toolkit';
 import {
-	Action,
+	createSlice,
 	PayloadAction,
-	configureStore,
-	ThunkAction,
 } from '@reduxjs/toolkit';
-import { RootState } from './store';
+import { Todo, State } from './types';
 
-export type Todo = {
-	id: number;
-	title: string;
-	description: string;
-};
-
-export interface StateStore {
-	id: number;
-	todos: Todo[];
-}
-const initialState: StateStore = {
+const initialState: State = {
 	id: 0,
 	todos: [],
 };
-export const reducer = createSlice({
+export const todoReducer = createSlice({
 	name: 'Todo-List',
-	initialState: initialState,
+	initialState,
 	reducers: {
 		addTodo: (
 			state,
-			action: PayloadAction<{
-				title: string;
-				description: string;
-			}>
+			action: PayloadAction<Omit<Todo, 'id'>>
 		) => {
 			state.id += 1;
 			state.todos.push({
@@ -43,7 +27,8 @@ export const reducer = createSlice({
 			state,
 			action: PayloadAction<number>
 		) => {
-			state.todos.filter(
+			console.log(action.payload);
+			state.todos = state.todos.filter(
 				(todo) => todo.id !== action.payload
 			);
 		},
@@ -57,8 +42,7 @@ export const reducer = createSlice({
 		},
 	},
 });
-export const { addTodo, removeTodo, editTodo } =
-	reducer.actions;
 
-// export const selectTodo = (state: RootState) =>
-// 	state['Todo-List'].todos;
+export const { addTodo, removeTodo, editTodo } =
+	todoReducer.actions;
+export default todoReducer.reducer;
